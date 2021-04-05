@@ -20,3 +20,4 @@ handlers:
 root:
   level: DEBUG
   handlers: [console, file]
+disable_existing_loggers: false
