@@ -9,13 +9,17 @@ logger = logging.getLogger(__name__)
 
 
 def setup_logging(paths: Paths):
-    log_dir = paths.log_path
-    log_dir.mkdir(exist_ok=True)
-    with paths.logging_config_file.open("r") as f:
-        logging_config = yaml.safe_load(f)
-        patch_filename(logging_config['handlers']['file'], log_dir)
-        logging.config.dictConfig(logging_config)
-    logger.info("Logging configured successfully")
+    try:
+        log_dir = paths.log_path
+        log_dir.mkdir(exist_ok=True)
+        with paths.logging_config_file.open("r") as f:
+            logging_config = yaml.safe_load(f)
+            patch_filename(logging_config['handlers']['file'], log_dir)
+            logging.config.dictConfig(logging_config)
+        logger.info("Logging configured successfully")
+    except IOError:
+        logging.basicConfig(level=logging.INFO)
+        logger.info("logging config not found")
 
 
 def patch_filename(dct: dict, log_dir: Path):
