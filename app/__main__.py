@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 
 from app.config import load_config
@@ -11,14 +12,22 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    paths = Paths(Path(__file__).parent.parent)
-    setup_logging(paths)
+    paths = get_paths()
 
+    setup_logging(paths)
     config = load_config(paths)
 
     logger.info("started")
+    try:
+        foo(config)
+    finally:
+        logger.info("stopped")
 
-    foo(config)
+
+def get_paths() -> Paths:
+    if path := os.getenv("APP_PATH"):
+        return Paths(Path(path))
+    return Paths(Path(__file__).parent.parent)
 
 
 if __name__ == '__main__':
